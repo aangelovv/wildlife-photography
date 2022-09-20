@@ -1,8 +1,9 @@
 const User = require("../models/User");
 const { hash, compare } = require("bcrypt");
 
-async function register(username, password) {
-  const existing = await getUserByUsername(username);
+async function register(firstName, lastName, email, password) {
+  const existing = await getUserByIdentificator(email);
+
   if (existing) {
     throw new Error("Username is taken");
   }
@@ -10,17 +11,19 @@ async function register(username, password) {
   const hashedPassword = await hash(password, 10);
 
   const user = new User({
-    username,
+    firstName,
+    lastName,
+    email,
     hashedPassword,
   });
 
-  await user.save;
+  await user.save();
 
   return user;
 }
 
-async function login(username, password) {
-  const user = await getUserByUsername(username);
+async function login(email, password) {
+  const user = await getUserByIdentificator(email);
 
   if (!user) {
     throw new Error("User doesn't exist");
@@ -35,9 +38,9 @@ async function login(username, password) {
   return user;
 }
 
-async function getUserByUsername(username) {
+async function getUserByIdentificator(email) {
   const user = await User.findOne({
-    username: new RegExp(`^${username}$`, "i"),
+    email: new RegExp(`^${email}$`, "i"),
   });
   return user;
 }
