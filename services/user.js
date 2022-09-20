@@ -36,7 +36,9 @@ async function login(username, password) {
 }
 
 async function getUserByUsername(username) {
-  const user = await User.findOne({ username });
+  const user = await User.findOne({
+    username: new RegExp(`^${username}$`, "i"),
+  });
   return user;
 }
 
