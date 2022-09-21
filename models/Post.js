@@ -19,7 +19,7 @@ const postSchema = new Schema({
     type: String,
     minlength: [15, "Location must be at least 15 characters long"],
   },
-  data: {
+  date: {
     type: String,
     minlength: [10, "Data must be 10 characters long"],
     maxlength: [10, "Data must be 10 characters long"],
