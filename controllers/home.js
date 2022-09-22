@@ -1,4 +1,9 @@
-const { getPosts, getPostsById } = require("../services/post");
+const { isUser } = require("../middleware/gurads");
+const {
+  getPosts,
+  getPostsbyAuthor,
+  getPostsById,
+} = require("../services/post");
 const { postViewModel } = require("../util/mappers");
 
 const router = require("express").Router();
@@ -24,9 +29,20 @@ router.get("/catalog/:id", async (req, res) => {
     console.log("there is no user");
   } else if (req.session.user._id == post.author._id) {
     post.isAuthor = true;
+  } else {
+    post.hasVoted =
+      post.votes.find((v) => v._id == req.session.user._id) != undefined;
   }
 
   res.render("details", { title: post.title, post });
+});
+
+router.get("/profile", isUser(), async (req, res) => {
+  const posts = (await getPostsbyAuthor(req.session.user._id)).map(
+    postViewModel
+  );
+  console.log(posts);
+  res.render("profile", { title: "Profile", posts });
 });
 
 module.exports = router;
