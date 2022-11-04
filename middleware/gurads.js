@@ -17,6 +17,7 @@ function isGuest() {
     }
   };
 }
+console.log("test");
 
 module.exports = {
   isUser,
